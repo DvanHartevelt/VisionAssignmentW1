@@ -2,7 +2,14 @@
 import numpy as np
 
 def gray_histo(img, printVal=False):
-    # expetion testing
+    """
+    This function creates a histogram of a grayscaled picture
+
+    :param img: image matrix
+    :param printVal: if true: prints every value on command line
+    :return: list of nr of pixels at each value between 0 and 255
+    """
+    # exception testing
     if (len(img.shape) != 2):
         print("non-grayscaled pictures can't be stretched with this function")
         return False
@@ -24,7 +31,16 @@ def gray_histo(img, printVal=False):
     return histoOutput
 
 def gray_stretching(img, imgHisto=None, lowPercent=1, highPercent=99):
-    # exeption testing
+    """
+    This function stretches a grayscaled picture
+
+    :param img: image matrix
+    :param imgHisto: histogram of said matrix
+    :param lowPercent: percentile of pixels with values that should be transformed to 0
+    :param highPercent: percentile of pixels with values that should be transformed to 255
+    :return: stretched image matrix
+    """
+    # exception testing
     if (lowPercent > highPercent):
         print("lowPercent can't be higher than highpercent")
         return img
