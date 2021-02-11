@@ -6,7 +6,7 @@ def gray_histo(img, printVal=False):
     This function creates a histogram of a grayscaled picture
 
     :param img: image matrix
-    :param printVal: if true: prints every value on command line
+    :param printVal: if true prints every value on command line
     :return: list of nr of pixels at each value between 0 and 255
     """
     # exception testing
