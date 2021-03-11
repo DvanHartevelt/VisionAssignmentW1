@@ -12,6 +12,67 @@ from util import image_manipulation_functions as im
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import random
+import math
+
+def colour():
+    #importing the foggy street picture
+    img = cv2.imread("Resources/foggyPokerCards.jpeg")
+    img = cv2.resize(img, (int(img.shape[1]/2), int(img.shape[0]/2)))
+
+    img = np.zeros_like(img)
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    width = img.shape[1]
+    height = img.shape[0]
+
+    coloursNames = np.array(['red', 'green', 'blue', 'yellow', 'magenta', 'orange', 'cyan'])
+    coloursRGB = np.array([[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 51], [255, 0, 255], [255, 128, 0], [0, 255, 255]])
+
+
+    def generateMap(nr):
+        points = []
+
+        np.random.shuffle(coloursRGB)
+
+        for i in range(int(nr)):
+            points.append([random.randint(0, height), random.randint(0, width)])
+
+        print(points)
+
+        for y in range(height):
+            for x in range(width):
+                minDistance = float('inf')
+                pixelColour = np.zeros(3)
+
+                for p in range(len(points)):
+                    distance = math.dist([y, x], points[p])
+                    #print(distance)
+
+                    if distance < 3: # or distance == minDistance:
+                        minDistance = distance
+                        pixelColour = np.zeros(3)
+                    elif distance < minDistance:
+                        minDistance = distance
+                        pixelColour = coloursRGB[p]
+
+                img[y, x] = pixelColour
+
+
+        cv2.imshow("Distance thing", img)
+
+        cv2.waitKey(0)
+
+        pass
+
+    while True:
+        generateMap(5)
+
+
+
+
+    pass
 
 def main():
     #Testing the camera
@@ -233,4 +294,5 @@ def main2():
 
 
 if __name__ == "__main__":
-    main()
+    colour()
+    #main()
