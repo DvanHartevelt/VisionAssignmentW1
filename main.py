@@ -30,14 +30,28 @@ def colour():
     coloursNames = np.array(['red', 'green', 'blue', 'yellow', 'magenta', 'orange', 'cyan'])
     coloursRGB = np.array([[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 51], [255, 0, 255], [255, 128, 0], [0, 255, 255]])
 
+    def generateDistanceFunc(nr):
+        def distanceFunc(a, b):
+            # if nr == 1: #Euclidian distance
+            #     return math.dist(a, b)
+            # if nr == 2: #Manhattan distance
+            #     return (abs(a[0] - b[0]) + abs(a[1] - b[1]))
+            if nr > 0: #(positive) Minkowski distance
+                return math.pow(((abs(a[0] - b[0]))**nr + (abs(a[1] - b[1]))**nr), (1/nr))
+
+        return distanceFunc
+
+    distanceFunction = generateDistanceFunc(2)
+
+    points = []
+
+    np.random.shuffle(coloursRGB)
+
+    for i in range(int(5)):
+        points.append([random.randint(0, height), random.randint(0, width)])
 
     def generateMap(nr):
-        points = []
 
-        np.random.shuffle(coloursRGB)
-
-        for i in range(int(nr)):
-            points.append([random.randint(0, height), random.randint(0, width)])
 
         print(points)
 
@@ -47,7 +61,7 @@ def colour():
                 pixelColour = np.zeros(3)
 
                 for p in range(len(points)):
-                    distance = math.dist([y, x], points[p])
+                    distance = distanceFunction([y, x], points[p])
                     #print(distance)
 
                     if distance < 3: # or distance == minDistance:
@@ -60,14 +74,20 @@ def colour():
                 img[y, x] = pixelColour
 
 
-        cv2.imshow("Distance thing", img)
+        cv2.imshow(f"Distance thing, minowski order {minowski}", img)
 
         cv2.waitKey(0)
 
         pass
 
+    minowski = 2
+
     while True:
+        if minowski == 0:
+            minowski -= 0.25
+        distanceFunction = generateDistanceFunc(minowski)
         generateMap(5)
+        minowski -= 0.25
 
 
 
