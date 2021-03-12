@@ -9,116 +9,36 @@
 # All pictures and
 
 from util import image_manipulation_functions as im
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
 import random
 import math
 
-def colour():
-    #importing the foggy street picture
-    img = cv2.imread("Resources/foggyPokerCards.jpeg")
-    img = cv2.resize(img, (int(img.shape[1]/2), int(img.shape[0]/2)))
-
-    img = np.zeros_like(img)
-
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-    width = img.shape[1]
-    height = img.shape[0]
-
-    coloursNames = np.array(['red', 'green', 'blue', 'yellow', 'magenta', 'orange', 'cyan'])
-    coloursRGB = np.array([[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 51], [255, 0, 255], [255, 128, 0], [0, 255, 255]])
-
-    def generateDistanceFunc(nr):
-        def distanceFunc(a, b):
-            # if nr == 1: #Euclidian distance
-            #     return math.dist(a, b)
-            # if nr == 2: #Manhattan distance
-            #     return (abs(a[0] - b[0]) + abs(a[1] - b[1]))
-            if nr > 0: #(positive) Minkowski distance
-                return math.pow(((abs(a[0] - b[0]))**nr + (abs(a[1] - b[1]))**nr), (1/nr))
-
-        return distanceFunc
-
-    distanceFunction = generateDistanceFunc(2)
-
-    points = []
-
-    np.random.shuffle(coloursRGB)
-
-    for i in range(int(5)):
-        points.append([random.randint(0, height), random.randint(0, width)])
-
-    def generateMap(nr):
-
-
-        print(points)
-
-        for y in range(height):
-            for x in range(width):
-                minDistance = float('inf')
-                pixelColour = np.zeros(3)
-
-                for p in range(len(points)):
-                    distance = distanceFunction([y, x], points[p])
-                    #print(distance)
-
-                    if distance < 3: # or distance == minDistance:
-                        minDistance = distance
-                        pixelColour = np.zeros(3)
-                    elif distance < minDistance:
-                        minDistance = distance
-                        pixelColour = coloursRGB[p]
-
-                img[y, x] = pixelColour
-
-
-        cv2.imshow(f"Distance thing, minowski order {minowski}", img)
-
-        cv2.waitKey(0)
-
-        pass
-
-    minowski = 2
-
-    while True:
-        if minowski == 0:
-            minowski -= 0.25
-        distanceFunction = generateDistanceFunc(minowski)
-        generateMap(5)
-        minowski -= 0.25
-
-
-
-
-    pass
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 
 def main():
     #Testing the camera
-    # print("Taking picture...")
-    # try:
-    #     cap = cv2.VideoCapture(0)
-    #     camSucces, imgCam = cap.read()
-    # except:
-    #     print("Picture could not be taken.")
-    #     camSuccess = False
-    #
-    # if camSuccess:
-    #     cv2.imshow("Camera output", imgCam)
-    #     cv2.imwrite("Output/cameraPicture.png", imgCam)
-    #     cv2.waitKey(0)
+    print("Taking picture...")
+    try:
+        cap = cv2.VideoCapture(0)
+        camSucces, imgCam = cap.read()
+    except:
+        print("Picture could not be taken.")
+        camSuccess = False
+
+    if camSuccess:
+        cv2.imshow("Camera output", imgCam)
+        cv2.imwrite("Output/cameraPicture.png", imgCam)
+        cv2.waitKey(0)
 
 
     #importing the foggy street picture
     img = cv2.imread("Resources/foggyPicture.PNG", 0)
     img = cv2.resize(img, (int(img.shape[1]/2), int(img.shape[0]/2)))
 
-
     """
     Histogram function
     """
-
     def gray_histo(img):
         """
         This function creates a histogram of a grayscaled picture
@@ -129,7 +49,7 @@ def main():
         width = img.shape[1]
         height = img.shape[0]
 
-        histo = [0 for i in range(0, 256)]
+        histo = np.zeros(256)
 
         # now a double for-loop, to loop across all pixels of the picture
         for y in range(0, height):
@@ -171,7 +91,6 @@ def main():
         :param higherbound: uint8
         :return: newImg
         """
-
         imgNew = np.zeros_like(img)
 
         width = img.shape[1]
@@ -226,6 +145,79 @@ def main():
     plt.show()
 
     print("Thank you for running this demo.")
+
+    pass
+
+def colour():
+    #importing the foggy street picture
+    img = cv2.imread("Resources/foggyPokerCards.jpeg")
+    img = cv2.resize(img, (int(img.shape[1]/2), int(img.shape[0]/2)))
+
+    img = np.zeros_like(img)
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    width = img.shape[1]
+    height = img.shape[0]
+
+    coloursNames = np.array(['red', 'green', 'blue', 'yellow', 'magenta', 'orange', 'cyan'])
+    coloursRGB = np.array([[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 51], [255, 0, 255], [255, 128, 0], [0, 255, 255]])
+
+    def generateDistanceFunc(nr):
+        def distanceFunc(a, b):
+            # if nr == 1: #Euclidian distance
+            #     return math.dist(a, b)
+            # if nr == 2: #Manhattan distance
+            #     return (abs(a[0] - b[0]) + abs(a[1] - b[1]))
+            if nr > 0: #(positive) Minkowski distance
+                return math.pow(((abs(a[0] - b[0]))**nr + (abs(a[1] - b[1]))**nr), (1/nr))
+
+        return distanceFunc
+
+    distanceFunction = generateDistanceFunc(2)
+
+    points = []
+
+    np.random.shuffle(coloursRGB)
+
+    for i in range(int(5)):
+        points.append([random.randint(0, height), random.randint(0, width)])
+
+    def generateMap(nr):
+        for y in range(height):
+            for x in range(width):
+                minDistance = float('inf')
+                pixelColour = np.zeros(3)
+
+                for p in range(len(points)):
+                    distance = distanceFunction([y, x], points[p])
+                    #print(distance)
+
+                    if distance < 3: # or distance == minDistance:
+                        minDistance = distance
+                        pixelColour = np.zeros(3)
+                    elif distance < minDistance:
+                        minDistance = distance
+                        pixelColour = coloursRGB[p]
+
+                img[y, x] = pixelColour
+
+
+        cv2.imshow(f"Distance thing, minowski order", img)
+
+        cv2.waitKey(10)
+
+        pass
+
+    minowski = 0.1
+
+    while True:
+        if minowski == 0:
+            minowski -= 0.25
+        distanceFunction = generateDistanceFunc(minowski)
+        generateMap(5)
+        print(minowski)
+        minowski = minowski*1.1
 
     pass
 
@@ -314,5 +306,5 @@ def main2():
 
 
 if __name__ == "__main__":
-    colour()
-    #main()
+    #colour()
+    main()
